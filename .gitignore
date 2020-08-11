@@ -1,0 +1,19 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.swp
+
+# Node / Angular
+node_modules/
+dist/
+out-tsc/
+coverage/
+npm-debug.log*
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
