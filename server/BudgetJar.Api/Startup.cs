@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BudgetJar.Api.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,7 +23,9 @@ namespace BudgetJar.Api
             services.AddDbContext<BudgetContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("BudgetJar")));
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
