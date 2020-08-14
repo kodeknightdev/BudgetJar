@@ -1,5 +1,7 @@
+using BudgetJar.Api.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,6 +19,9 @@ namespace BudgetJar.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<BudgetContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("BudgetJar")));
+
             services.AddControllers();
         }
 
