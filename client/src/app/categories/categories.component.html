@@ -1,0 +1,33 @@
+<section class="card">
+  <h2>Add category</h2>
+  <form [formGroup]="form" (ngSubmit)="add()" class="inline-form">
+    <input formControlName="name" placeholder="Name" maxlength="50">
+    <select formControlName="type">
+      <option value="Expense">Expense</option>
+      <option value="Income">Income</option>
+    </select>
+    <button type="submit" [disabled]="form.invalid">Add</button>
+  </form>
+</section>
+
+<div class="columns">
+  <section class="card">
+    <h2>Income</h2>
+    <ul class="category-list">
+      <li *ngFor="let c of income">
+        <span class="name">{{ c.name }}</span>
+        <button class="link danger" (click)="remove(c)">Delete</button>
+      </li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Expenses</h2>
+    <ul class="category-list">
+      <li *ngFor="let c of expenses">
+        <span class="name">{{ c.name }}</span>
+        <button class="link danger" (click)="remove(c)">Delete</button>
+      </li>
+    </ul>
+  </section>
+</div>
