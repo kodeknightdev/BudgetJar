@@ -1,0 +1,31 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 56px;
+  padding: 0 24px;
+  background: #1f2d3d;
+  color: #fff;
+}
+
+.topbar h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.topbar nav a {
+  color: #cfd8e3;
+  text-decoration: none;
+  margin-right: 16px;
+}
+
+.topbar nav a.active {
+  color: #fff;
+  font-weight: 600;
+}
+
+main {
+  max-width: 960px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
