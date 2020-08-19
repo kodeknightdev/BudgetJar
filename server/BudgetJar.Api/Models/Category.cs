@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BudgetJar.Api.Models
@@ -11,5 +12,7 @@ namespace BudgetJar.Api.Models
         public string Name { get; set; }
 
         public TransactionType Type { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }
