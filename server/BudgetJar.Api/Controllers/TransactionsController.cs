@@ -63,6 +63,12 @@ namespace BudgetJar.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<TransactionDto>> Create(SaveTransactionRequest request)
         {
+            if (!await CategoryExistsAsync(request.CategoryId))
+            {
+                ModelState.AddModelError(nameof(request.CategoryId), "Unknown category.");
+                return ValidationProblem(ModelState);
+            }
+
             var transaction = new Transaction
             {
                 Amount = request.Amount,
@@ -87,6 +93,12 @@ namespace BudgetJar.Api.Controllers
                 return NotFound();
             }
 
+            if (!await CategoryExistsAsync(request.CategoryId))
+            {
+                ModelState.AddModelError(nameof(request.CategoryId), "Unknown category.");
+                return ValidationProblem(ModelState);
+            }
+
             transaction.Amount = request.Amount;
             transaction.Date = request.Date.Value.Date;
             transaction.Description = request.Description?.Trim();
@@ -109,6 +121,11 @@ namespace BudgetJar.Api.Controllers
             await _db.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private Task<bool> CategoryExistsAsync(int categoryId)
+        {
+            return _db.Categories.AnyAsync(c => c.Id == categoryId);
         }
 
         private static TransactionDto ToDto(Transaction t)
