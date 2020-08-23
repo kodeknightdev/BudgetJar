@@ -1,0 +1,15 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.toolbar h2 {
+  margin: 0;
+}
+
+.actions {
+  white-space: nowrap;
+  text-align: right;
+}

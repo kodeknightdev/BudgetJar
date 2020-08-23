@@ -76,6 +76,31 @@ button.link.danger {
   gap: 8px;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+th.amount,
+td.amount {
+  text-align: right;
+}
+
+.income {
+  color: #2e7d32;
+}
+
+.expense {
+  color: #c0392b;
+}
+
 .error {
   color: #c0392b;
   margin: 8px 0 0;
