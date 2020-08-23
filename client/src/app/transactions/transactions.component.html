@@ -49,4 +49,10 @@
       </tr>
     </tbody>
   </table>
+
+  <div class="totals">
+    <span>Income <strong class="income">{{ totalIncome | number:'1.2-2' }}</strong></span>
+    <span>Expenses <strong class="expense">{{ totalExpense | number:'1.2-2' }}</strong></span>
+    <span>Net <strong [class.income]="net >= 0" [class.expense]="net < 0">{{ net | number:'1.2-2' }}</strong></span>
+  </div>
 </section>

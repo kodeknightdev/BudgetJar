@@ -9,6 +9,13 @@
   margin: 0;
 }
 
+.totals {
+  display: flex;
+  justify-content: flex-end;
+  gap: 24px;
+  padding-top: 12px;
+}
+
 .actions {
   white-space: nowrap;
   text-align: right;

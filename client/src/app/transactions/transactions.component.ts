@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Category, Transaction } from '../models';
+import { Category, Transaction, TransactionType } from '../models';
 import { CategoryService } from '../services/category.service';
 import { TransactionService } from '../services/transaction.service';
 
@@ -38,6 +38,18 @@ export class TransactionsComponent implements OnInit {
 
   get monthValue(): string {
     return `${this.year}-${String(this.month).padStart(2, '0')}`;
+  }
+
+  get totalIncome(): number {
+    return this.sum('Income');
+  }
+
+  get totalExpense(): number {
+    return this.sum('Expense');
+  }
+
+  get net(): number {
+    return this.totalIncome - this.totalExpense;
   }
 
   get incomeCategories(): Category[] {
@@ -103,6 +115,12 @@ export class TransactionsComponent implements OnInit {
       return;
     }
     this.transactionService.delete(t.id).subscribe(() => this.load());
+  }
+
+  private sum(type: TransactionType): number {
+    return this.transactions
+      .filter(t => t.type === type)
+      .reduce((total, t) => total + t.amount, 0);
   }
 
   private today(): string {
