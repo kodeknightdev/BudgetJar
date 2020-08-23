@@ -99,7 +99,7 @@ export class TransactionsComponent implements OnInit {
     this.editingId = t.id;
     this.form.setValue({
       amount: t.amount,
-      date: t.date,
+      date: t.date.substring(0, 10),
       description: t.description || '',
       categoryId: t.categoryId
     });
