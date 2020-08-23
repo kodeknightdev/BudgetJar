@@ -1,4 +1,24 @@
 <section class="card">
+  <h2>{{ editingId ? 'Edit transaction' : 'Add transaction' }}</h2>
+  <form [formGroup]="form" (ngSubmit)="save()" class="inline-form">
+    <input type="date" formControlName="date">
+    <select formControlName="categoryId">
+      <option [ngValue]="null" disabled>Category</option>
+      <optgroup label="Expenses">
+        <option *ngFor="let c of expenseCategories" [ngValue]="c.id">{{ c.name }}</option>
+      </optgroup>
+      <optgroup label="Income">
+        <option *ngFor="let c of incomeCategories" [ngValue]="c.id">{{ c.name }}</option>
+      </optgroup>
+    </select>
+    <input type="number" formControlName="amount" placeholder="Amount" min="0.01" step="0.01">
+    <input formControlName="description" placeholder="Description" maxlength="200">
+    <button type="submit" [disabled]="form.invalid">{{ editingId ? 'Save' : 'Add' }}</button>
+    <button type="button" class="secondary" *ngIf="editingId" (click)="cancelEdit()">Cancel</button>
+  </form>
+</section>
+
+<section class="card">
   <div class="toolbar">
     <h2>Transactions</h2>
     <input type="month" #monthInput [value]="monthValue" (change)="onMonthChange(monthInput.value)">
@@ -23,6 +43,7 @@
           {{ t.type === 'Expense' ? '-' : '' }}{{ t.amount | number:'1.2-2' }}
         </td>
         <td class="actions">
+          <button class="link" (click)="edit(t)">Edit</button>
           <button class="link danger" (click)="remove(t)">Delete</button>
         </td>
       </tr>

@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { Transaction } from '../models';
+import { Category, Transaction } from '../models';
+import { CategoryService } from '../services/category.service';
 import { TransactionService } from '../services/transaction.service';
 
 @Component({
@@ -12,8 +16,21 @@ export class TransactionsComponent implements OnInit {
   year: number;
   month: number;
   transactions: Transaction[] = [];
+  categories: Category[] = [];
+  editingId: number | null = null;
 
-  constructor(private transactionService: TransactionService) {
+  form = this.fb.group({
+    amount: [null, [Validators.required, Validators.min(0.01)]],
+    date: [this.today(), Validators.required],
+    description: ['', Validators.maxLength(200)],
+    categoryId: [null, Validators.required]
+  });
+
+  constructor(
+    private fb: FormBuilder,
+    private categoryService: CategoryService,
+    private transactionService: TransactionService
+  ) {
     const now = new Date();
     this.year = now.getFullYear();
     this.month = now.getMonth() + 1;
@@ -23,7 +40,16 @@ export class TransactionsComponent implements OnInit {
     return `${this.year}-${String(this.month).padStart(2, '0')}`;
   }
 
+  get incomeCategories(): Category[] {
+    return this.categories.filter(c => c.type === 'Income');
+  }
+
+  get expenseCategories(): Category[] {
+    return this.categories.filter(c => c.type === 'Expense');
+  }
+
   ngOnInit(): void {
+    this.categoryService.getAll().subscribe(categories => this.categories = categories);
     this.load();
   }
 
@@ -42,10 +68,44 @@ export class TransactionsComponent implements OnInit {
       .subscribe(transactions => this.transactions = transactions);
   }
 
+  save(): void {
+    if (this.form.invalid) {
+      return;
+    }
+    const value = this.form.value;
+    const request: Observable<unknown> = this.editingId
+      ? this.transactionService.update(this.editingId, value)
+      : this.transactionService.create(value);
+
+    request.subscribe(() => {
+      this.cancelEdit();
+      this.load();
+    });
+  }
+
+  edit(t: Transaction): void {
+    this.editingId = t.id;
+    this.form.setValue({
+      amount: t.amount,
+      date: t.date,
+      description: t.description || '',
+      categoryId: t.categoryId
+    });
+  }
+
+  cancelEdit(): void {
+    this.editingId = null;
+    this.form.reset({ amount: null, date: this.today(), description: '', categoryId: null });
+  }
+
   remove(t: Transaction): void {
     if (!confirm('Delete this transaction?')) {
       return;
     }
     this.transactionService.delete(t.id).subscribe(() => this.load());
+  }
+
+  private today(): string {
+    return new Date().toISOString().substring(0, 10);
   }
 }
