@@ -11,5 +11,8 @@ namespace BudgetJar.Api.Dtos
 
         [EnumDataType(typeof(TransactionType))]
         public TransactionType Type { get; set; }
+
+        [RegularExpression("^#[0-9a-fA-F]{6}$", ErrorMessage = "Color must be a hex value like #4e79a7.")]
+        public string Color { get; set; }
     }
 }

@@ -49,7 +49,8 @@ namespace BudgetJar.Api.Controllers
             var category = new Category
             {
                 Name = request.Name.Trim(),
-                Type = request.Type
+                Type = request.Type,
+                Color = request.Color
             };
 
             _db.Categories.Add(category);
@@ -69,6 +70,7 @@ namespace BudgetJar.Api.Controllers
 
             category.Name = request.Name.Trim();
             category.Type = request.Type;
+            category.Color = request.Color;
             await _db.SaveChangesAsync();
 
             return NoContent();
@@ -95,7 +97,8 @@ namespace BudgetJar.Api.Controllers
             {
                 Id = c.Id,
                 Name = c.Name,
-                Type = c.Type
+                Type = c.Type,
+                Color = c.Color
             };
         }
     }

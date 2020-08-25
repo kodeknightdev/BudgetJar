@@ -13,6 +13,9 @@ namespace BudgetJar.Api.Models
 
         public TransactionType Type { get; set; }
 
+        [MaxLength(7)]
+        public string Color { get; set; }
+
         public ICollection<Transaction> Transactions { get; set; }
     }
 }
