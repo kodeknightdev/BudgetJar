@@ -14,7 +14,8 @@ export class CategoriesComponent implements OnInit {
 
   form = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(50)]],
-    type: ['Expense', Validators.required]
+    type: ['Expense', Validators.required],
+    color: ['#4e79a7']
   });
 
   constructor(private fb: FormBuilder, private categoryService: CategoryService) { }
@@ -39,9 +40,9 @@ export class CategoriesComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    const type = this.form.value.type;
+    const { type, color } = this.form.value;
     this.categoryService.create(this.form.value).subscribe(() => {
-      this.form.reset({ name: '', type });
+      this.form.reset({ name: '', type, color });
       this.load();
     });
   }

@@ -12,6 +12,12 @@
   border-bottom: 1px solid #eee;
 }
 
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
 .category-list .name {
   flex: 1;
 }
