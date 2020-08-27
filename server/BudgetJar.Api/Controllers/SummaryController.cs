@@ -45,5 +45,26 @@ namespace BudgetJar.Api.Controllers
                 })
                 .ToList();
         }
+
+        [HttpGet("categories")]
+        public async Task<ActionResult<List<CategoryTotalDto>>> ByCategory([FromQuery] int year, [FromQuery] int month)
+        {
+            var totals = await _db.Transactions
+                .Where(t => t.Category.Type == TransactionType.Expense
+                    && t.Date.Year == year
+                    && t.Date.Month == month)
+                .Select(t => new { t.CategoryId, t.Category.Name, t.Category.Color, t.Amount })
+                .GroupBy(x => new { x.CategoryId, x.Name, x.Color })
+                .Select(g => new CategoryTotalDto
+                {
+                    CategoryId = g.Key.CategoryId,
+                    Name = g.Key.Name,
+                    Color = g.Key.Color,
+                    Total = g.Sum(x => x.Amount)
+                })
+                .ToListAsync();
+
+            return totals.OrderByDescending(t => t.Total).ToList();
+        }
     }
 }
