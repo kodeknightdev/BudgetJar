@@ -17,6 +17,14 @@ export interface Transaction {
   type: TransactionType;
 }
 
+export interface MonthlyTotal {
+  year: number;
+  month: number;
+  income: number;
+  expense: number;
+  net: number;
+}
+
 export interface SaveTransaction {
   amount: number;
   date: string;
