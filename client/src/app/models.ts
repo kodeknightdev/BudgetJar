@@ -25,6 +25,13 @@ export interface MonthlyTotal {
   net: number;
 }
 
+export interface CategoryTotal {
+  categoryId: number;
+  name: string;
+  color: string;
+  total: number;
+}
+
 export interface SaveTransaction {
   amount: number;
   date: string;

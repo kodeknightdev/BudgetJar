@@ -5,4 +5,20 @@
   <div class="chart-box">
     <canvas #monthlyCanvas></canvas>
   </div>
+  <p class="hint">Click a month to see where the money went.</p>
+</section>
+
+<section class="card">
+  <div class="toolbar">
+    <h2>Expenses by category</h2>
+    <select #monthSelect (change)="selectMonth(+monthSelect.value)">
+      <option *ngFor="let label of monthLabels; let i = index" [value]="i + 1" [selected]="i + 1 === month">
+        {{ label }}
+      </option>
+    </select>
+  </div>
+  <div class="chart-box">
+    <canvas #breakdownCanvas></canvas>
+    <p class="empty" *ngIf="!breakdown.length">No expenses recorded for {{ monthLabels[month - 1] }} {{ year }}.</p>
+  </div>
 </section>

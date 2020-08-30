@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
-import { MonthlyTotal } from '../models';
+import { CategoryTotal, MonthlyTotal } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -16,5 +16,12 @@ export class SummaryService {
   monthly(year: number): Observable<MonthlyTotal[]> {
     const params = new HttpParams().set('year', String(year));
     return this.http.get<MonthlyTotal[]>(`${this.url}/monthly`, { params });
+  }
+
+  byCategory(year: number, month: number): Observable<CategoryTotal[]> {
+    const params = new HttpParams()
+      .set('year', String(year))
+      .set('month', String(month));
+    return this.http.get<CategoryTotal[]>(`${this.url}/categories`, { params });
   }
 }
