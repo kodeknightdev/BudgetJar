@@ -1,6 +1,14 @@
 <section class="card">
   <div class="toolbar">
     <h2>{{ year }} overview</h2>
+    <select #yearSelect (change)="onYearChange(yearSelect.value)">
+      <option *ngFor="let y of years" [value]="y" [selected]="y === year">{{ y }}</option>
+    </select>
+  </div>
+  <div class="year-totals">
+    <span>Income <strong class="income">{{ yearIncome | number:'1.2-2' }}</strong></span>
+    <span>Expenses <strong class="expense">{{ yearExpense | number:'1.2-2' }}</strong></span>
+    <span>Saved <strong>{{ yearIncome - yearExpense | number:'1.2-2' }}</strong></span>
   </div>
   <div class="chart-box">
     <canvas #monthlyCanvas></canvas>

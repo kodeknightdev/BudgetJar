@@ -9,6 +9,12 @@
   margin: 0;
 }
 
+.year-totals {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
 .chart-box {
   position: relative;
   height: 320px;

@@ -17,6 +17,7 @@ export class DashboardComponent implements OnInit {
 
   year = new Date().getFullYear();
   month = new Date().getMonth() + 1;
+  years: number[] = [];
   monthLabels = MONTH_LABELS;
   totals: MonthlyTotal[] = [];
   breakdown: CategoryTotal[] = [];
@@ -24,18 +25,40 @@ export class DashboardComponent implements OnInit {
   private monthlyChart: Chart;
   private breakdownChart: Chart;
 
-  constructor(private summaryService: SummaryService) { }
+  constructor(private summaryService: SummaryService) {
+    const current = new Date().getFullYear();
+    for (let y = current; y > current - 5; y--) {
+      this.years.push(y);
+    }
+  }
+
+  get yearIncome(): number {
+    return this.totals.reduce((sum, t) => sum + t.income, 0);
+  }
+
+  get yearExpense(): number {
+    return this.totals.reduce((sum, t) => sum + t.expense, 0);
+  }
 
   ngOnInit(): void {
-    this.summaryService.monthly(this.year).subscribe(totals => {
-      this.totals = totals;
-      this.renderMonthly();
-    });
-    this.loadBreakdown();
+    this.loadYear();
+  }
+
+  onYearChange(value: string): void {
+    this.year = Number(value);
+    this.loadYear();
   }
 
   selectMonth(month: number): void {
     this.month = month;
+    this.loadBreakdown();
+  }
+
+  private loadYear(): void {
+    this.summaryService.monthly(this.year).subscribe(totals => {
+      this.totals = totals;
+      this.renderMonthly();
+    });
     this.loadBreakdown();
   }
 
