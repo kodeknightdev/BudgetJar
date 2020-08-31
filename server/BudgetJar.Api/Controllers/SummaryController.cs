@@ -33,15 +33,18 @@ namespace BudgetJar.Api.Controllers
                 .Select(g => new { g.Key.Month, g.Key.Type, Total = g.Sum(x => x.Amount) })
                 .ToListAsync();
 
-            return rows
-                .GroupBy(r => r.Month)
-                .OrderBy(g => g.Key)
-                .Select(g => new MonthlyTotalDto
+            // Always return all 12 months so the client can map by index.
+            return Enumerable.Range(1, 12)
+                .Select(month => new MonthlyTotalDto
                 {
                     Year = y,
-                    Month = g.Key,
-                    Income = g.Where(r => r.Type == TransactionType.Income).Sum(r => r.Total),
-                    Expense = g.Where(r => r.Type == TransactionType.Expense).Sum(r => r.Total)
+                    Month = month,
+                    Income = rows
+                        .Where(r => r.Month == month && r.Type == TransactionType.Income)
+                        .Sum(r => r.Total),
+                    Expense = rows
+                        .Where(r => r.Month == month && r.Type == TransactionType.Expense)
+                        .Sum(r => r.Total)
                 })
                 .ToList();
         }
