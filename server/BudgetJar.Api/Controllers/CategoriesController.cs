@@ -85,6 +85,11 @@ namespace BudgetJar.Api.Controllers
                 return NotFound();
             }
 
+            if (await _db.Transactions.AnyAsync(t => t.CategoryId == id))
+            {
+                return Conflict(new { message = "This category still has transactions. Move or delete them first." });
+            }
+
             _db.Categories.Remove(category);
             await _db.SaveChangesAsync();
 
