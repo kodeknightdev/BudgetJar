@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -11,6 +12,7 @@ import { CategoryService } from '../services/category.service';
 })
 export class CategoriesComponent implements OnInit {
   categories: Category[] = [];
+  error = '';
 
   form = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(50)]],
@@ -51,6 +53,14 @@ export class CategoriesComponent implements OnInit {
     if (!confirm(`Delete "${category.name}"?`)) {
       return;
     }
-    this.categoryService.delete(category.id).subscribe(() => this.load());
+    this.error = '';
+    this.categoryService.delete(category.id).subscribe(
+      () => this.load(),
+      (err: HttpErrorResponse) => {
+        this.error = err.status === 409 && err.error?.message
+          ? err.error.message
+          : 'Could not delete category.';
+      }
+    );
   }
 }
