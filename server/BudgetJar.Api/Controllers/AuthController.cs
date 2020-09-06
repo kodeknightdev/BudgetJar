@@ -38,6 +38,7 @@ namespace BudgetJar.Api.Controllers
             user.PasswordHash = _hasher.HashPassword(user, request.Password);
 
             _db.Users.Add(user);
+            _db.Categories.AddRange(DefaultCategories.For(user));
             await _db.SaveChangesAsync();
 
             return _tokens.CreateToken(user);
