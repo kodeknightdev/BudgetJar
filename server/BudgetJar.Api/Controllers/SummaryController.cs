@@ -4,12 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using BudgetJar.Api.Data;
 using BudgetJar.Api.Dtos;
+using BudgetJar.Api.Extensions;
 using BudgetJar.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetJar.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class SummaryController : ControllerBase
@@ -24,10 +27,11 @@ namespace BudgetJar.Api.Controllers
         [HttpGet("monthly")]
         public async Task<ActionResult<List<MonthlyTotalDto>>> Monthly([FromQuery] int? year)
         {
+            var userId = User.GetUserId();
             var y = year ?? DateTime.Today.Year;
 
             var rows = await _db.Transactions
-                .Where(t => t.Date.Year == y)
+                .Where(t => t.Category.UserId == userId && t.Date.Year == y)
                 .Select(t => new { t.Date.Month, t.Category.Type, t.Amount })
                 .GroupBy(x => new { x.Month, x.Type })
                 .Select(g => new { g.Key.Month, g.Key.Type, Total = g.Sum(x => x.Amount) })
@@ -52,8 +56,11 @@ namespace BudgetJar.Api.Controllers
         [HttpGet("categories")]
         public async Task<ActionResult<List<CategoryTotalDto>>> ByCategory([FromQuery] int year, [FromQuery] int month)
         {
+            var userId = User.GetUserId();
+
             var totals = await _db.Transactions
-                .Where(t => t.Category.Type == TransactionType.Expense
+                .Where(t => t.Category.UserId == userId
+                    && t.Category.Type == TransactionType.Expense
                     && t.Date.Year == year
                     && t.Date.Month == month)
                 .Select(t => new { t.CategoryId, t.Category.Name, t.Category.Color, t.Amount })

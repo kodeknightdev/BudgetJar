@@ -3,12 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using BudgetJar.Api.Data;
 using BudgetJar.Api.Dtos;
+using BudgetJar.Api.Extensions;
 using BudgetJar.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetJar.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TransactionsController : ControllerBase
@@ -23,9 +26,10 @@ namespace BudgetJar.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<TransactionDto>>> GetAll([FromQuery] int? year, [FromQuery] int? month)
         {
+            var userId = User.GetUserId();
             var query = _db.Transactions
                 .Include(t => t.Category)
-                .AsQueryable();
+                .Where(t => t.Category.UserId == userId);
 
             if (year.HasValue)
             {
@@ -48,10 +52,7 @@ namespace BudgetJar.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TransactionDto>> Get(int id)
         {
-            var transaction = await _db.Transactions
-                .Include(t => t.Category)
-                .SingleOrDefaultAsync(t => t.Id == id);
-
+            var transaction = await FindAsync(id);
             if (transaction == null)
             {
                 return NotFound();
@@ -63,7 +64,7 @@ namespace BudgetJar.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<TransactionDto>> Create(SaveTransactionRequest request)
         {
-            if (!await CategoryExistsAsync(request.CategoryId))
+            if (!await OwnsCategoryAsync(request.CategoryId))
             {
                 ModelState.AddModelError(nameof(request.CategoryId), "Unknown category.");
                 return ValidationProblem(ModelState);
@@ -87,13 +88,13 @@ namespace BudgetJar.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, SaveTransactionRequest request)
         {
-            var transaction = await _db.Transactions.FindAsync(id);
+            var transaction = await FindAsync(id);
             if (transaction == null)
             {
                 return NotFound();
             }
 
-            if (!await CategoryExistsAsync(request.CategoryId))
+            if (!await OwnsCategoryAsync(request.CategoryId))
             {
                 ModelState.AddModelError(nameof(request.CategoryId), "Unknown category.");
                 return ValidationProblem(ModelState);
@@ -111,7 +112,7 @@ namespace BudgetJar.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var transaction = await _db.Transactions.FindAsync(id);
+            var transaction = await FindAsync(id);
             if (transaction == null)
             {
                 return NotFound();
@@ -123,9 +124,18 @@ namespace BudgetJar.Api.Controllers
             return NoContent();
         }
 
-        private Task<bool> CategoryExistsAsync(int categoryId)
+        private Task<Transaction> FindAsync(int id)
         {
-            return _db.Categories.AnyAsync(c => c.Id == categoryId);
+            var userId = User.GetUserId();
+            return _db.Transactions
+                .Include(t => t.Category)
+                .SingleOrDefaultAsync(t => t.Id == id && t.Category.UserId == userId);
+        }
+
+        private Task<bool> OwnsCategoryAsync(int categoryId)
+        {
+            var userId = User.GetUserId();
+            return _db.Categories.AnyAsync(c => c.Id == categoryId && c.UserId == userId);
         }
 
         private static TransactionDto ToDto(Transaction t)

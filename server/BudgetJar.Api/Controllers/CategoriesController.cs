@@ -3,12 +3,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using BudgetJar.Api.Data;
 using BudgetJar.Api.Dtos;
+using BudgetJar.Api.Extensions;
 using BudgetJar.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BudgetJar.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
@@ -23,7 +26,9 @@ namespace BudgetJar.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<List<CategoryDto>>> GetAll()
         {
+            var userId = User.GetUserId();
             var categories = await _db.Categories
+                .Where(c => c.UserId == userId)
                 .OrderBy(c => c.Type)
                 .ThenBy(c => c.Name)
                 .ToListAsync();
@@ -34,7 +39,7 @@ namespace BudgetJar.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryDto>> Get(int id)
         {
-            var category = await _db.Categories.FindAsync(id);
+            var category = await FindAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -48,6 +53,7 @@ namespace BudgetJar.Api.Controllers
         {
             var category = new Category
             {
+                UserId = User.GetUserId(),
                 Name = request.Name.Trim(),
                 Type = request.Type,
                 Color = request.Color
@@ -62,7 +68,7 @@ namespace BudgetJar.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, SaveCategoryRequest request)
         {
-            var category = await _db.Categories.FindAsync(id);
+            var category = await FindAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -79,7 +85,7 @@ namespace BudgetJar.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _db.Categories.FindAsync(id);
+            var category = await FindAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -94,6 +100,12 @@ namespace BudgetJar.Api.Controllers
             await _db.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private Task<Category> FindAsync(int id)
+        {
+            var userId = User.GetUserId();
+            return _db.Categories.SingleOrDefaultAsync(c => c.Id == id && c.UserId == userId);
         }
 
         private static CategoryDto ToDto(Category c)
