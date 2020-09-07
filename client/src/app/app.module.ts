@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoginComponent } from './login/login.component';
 import { TransactionsComponent } from './transactions/transactions.component';
 
 @NgModule({
@@ -14,6 +15,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
     AppComponent,
     CategoriesComponent,
     DashboardComponent,
+    LoginComponent,
     TransactionsComponent
   ],
   imports: [

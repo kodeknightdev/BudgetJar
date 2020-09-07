@@ -32,6 +32,12 @@ export interface CategoryTotal {
   total: number;
 }
 
+export interface AuthResponse {
+  token: string;
+  email: string;
+  expiresAt: string;
+}
+
 export interface SaveTransaction {
   amount: number;
   date: string;
