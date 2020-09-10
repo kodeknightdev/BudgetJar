@@ -43,10 +43,14 @@ export class CategoriesComponent implements OnInit {
       return;
     }
     const { type, color } = this.form.value;
-    this.categoryService.create(this.form.value).subscribe(() => {
-      this.form.reset({ name: '', type, color });
-      this.load();
-    });
+    this.error = '';
+    this.categoryService.create(this.form.value).subscribe(
+      () => {
+        this.form.reset({ name: '', type, color });
+        this.load();
+      },
+      (err: HttpErrorResponse) => this.error = err.error?.message || 'Could not add category.'
+    );
   }
 
   remove(category: Category): void {

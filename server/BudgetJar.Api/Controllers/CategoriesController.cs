@@ -51,10 +51,16 @@ namespace BudgetJar.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<CategoryDto>> Create(SaveCategoryRequest request)
         {
+            var name = request.Name.Trim();
+            if (await NameTakenAsync(name))
+            {
+                return Conflict(new { message = $"You already have a category called \"{name}\"." });
+            }
+
             var category = new Category
             {
                 UserId = User.GetUserId(),
-                Name = request.Name.Trim(),
+                Name = name,
                 Type = request.Type,
                 Color = request.Color
             };
@@ -74,7 +80,13 @@ namespace BudgetJar.Api.Controllers
                 return NotFound();
             }
 
-            category.Name = request.Name.Trim();
+            var name = request.Name.Trim();
+            if (await NameTakenAsync(name))
+            {
+                return Conflict(new { message = $"You already have a category called \"{name}\"." });
+            }
+
+            category.Name = name;
             category.Type = request.Type;
             category.Color = request.Color;
             await _db.SaveChangesAsync();
@@ -106,6 +118,12 @@ namespace BudgetJar.Api.Controllers
         {
             var userId = User.GetUserId();
             return _db.Categories.SingleOrDefaultAsync(c => c.Id == id && c.UserId == userId);
+        }
+
+        private Task<bool> NameTakenAsync(string name)
+        {
+            var userId = User.GetUserId();
+            return _db.Categories.AnyAsync(c => c.UserId == userId && c.Name == name);
         }
 
         private static CategoryDto ToDto(Category c)

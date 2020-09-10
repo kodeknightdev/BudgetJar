@@ -20,6 +20,10 @@ namespace BudgetJar.Api.Data
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
+            modelBuilder.Entity<Category>()
+                .HasIndex(c => new { c.UserId, c.Name })
+                .IsUnique();
+
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.Category)
                 .WithMany(c => c.Transactions)
