@@ -4,8 +4,10 @@ A small personal budgeting app: record income and expenses against categories an
 
 ## Stack
 
-- **server/** - ASP.NET Core 3.1 Web API, Entity Framework Core 3.1, SQL Server
-- **client/** - Angular 10, Chart.js 2
+- **server/** - ASP.NET Core Web API on .NET 5, Entity Framework Core 5, SQL Server
+- **client/** - Angular 11, Chart.js 2
+
+The project started on .NET Core 3.1 / Angular 10 and was moved to .NET 5 / Angular 11 - see the "Migrate to .NET 5" and "Bump Angular to v11" commits.
 
 ## Features
 
@@ -18,14 +20,14 @@ A small personal budgeting app: record income and expenses against categories an
 
 ### API
 
-Requires the .NET Core 3.1 SDK and a SQL Server instance (LocalDB works fine on Windows).
+Requires the .NET 5 SDK (see `server/global.json`) and a SQL Server instance (LocalDB works fine on Windows).
 
 ```bash
 cd server/BudgetJar.Api
 dotnet run
 ```
 
-The API listens on http://localhost:5000. The connection string is `ConnectionStrings:BudgetJar` in `appsettings.json`.
+The API listens on http://localhost:5000 and Swagger UI is at http://localhost:5000/swagger in Development. The connection string is `ConnectionStrings:BudgetJar` in `appsettings.json`.
 
 The JWT signing key in `appsettings.json` is for local development only. Override it with an environment variable (`Jwt__Key`) or user secrets anywhere else.
 
@@ -41,7 +43,7 @@ dotnet ef database drop
 
 ### Client
 
-Requires Node 12+.
+Requires Node 12.14+ or 14.15+.
 
 ```bash
 cd client
