@@ -46,7 +46,7 @@ namespace BudgetJar.Api.Controllers
                 .ThenByDescending(t => t.Id)
                 .ToListAsync();
 
-            return transactions.Select(ToDto).ToList();
+            return transactions.Select(t => t.ToDto()).ToList();
         }
 
         [HttpGet("{id}")]
@@ -58,7 +58,7 @@ namespace BudgetJar.Api.Controllers
                 return NotFound();
             }
 
-            return ToDto(transaction);
+            return transaction.ToDto();
         }
 
         [HttpPost]
@@ -82,7 +82,7 @@ namespace BudgetJar.Api.Controllers
             await _db.SaveChangesAsync();
             await _db.Entry(transaction).Reference(t => t.Category).LoadAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = transaction.Id }, ToDto(transaction));
+            return CreatedAtAction(nameof(Get), new { id = transaction.Id }, transaction.ToDto());
         }
 
         [HttpPut("{id}")]
@@ -136,20 +136,6 @@ namespace BudgetJar.Api.Controllers
         {
             var userId = User.GetUserId();
             return _db.Categories.AnyAsync(c => c.Id == categoryId && c.UserId == userId);
-        }
-
-        private static TransactionDto ToDto(Transaction t)
-        {
-            return new TransactionDto
-            {
-                Id = t.Id,
-                Amount = t.Amount,
-                Date = t.Date,
-                Description = t.Description,
-                CategoryId = t.CategoryId,
-                CategoryName = t.Category.Name,
-                Type = t.Category.Type
-            };
         }
     }
 }

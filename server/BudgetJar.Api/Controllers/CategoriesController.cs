@@ -33,7 +33,7 @@ namespace BudgetJar.Api.Controllers
                 .ThenBy(c => c.Name)
                 .ToListAsync();
 
-            return categories.Select(ToDto).ToList();
+            return categories.Select(c => c.ToDto()).ToList();
         }
 
         [HttpGet("{id}")]
@@ -45,7 +45,7 @@ namespace BudgetJar.Api.Controllers
                 return NotFound();
             }
 
-            return ToDto(category);
+            return category.ToDto();
         }
 
         [HttpPost]
@@ -68,7 +68,7 @@ namespace BudgetJar.Api.Controllers
             _db.Categories.Add(category);
             await _db.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = category.Id }, ToDto(category));
+            return CreatedAtAction(nameof(Get), new { id = category.Id }, category.ToDto());
         }
 
         [HttpPut("{id}")]
@@ -124,17 +124,6 @@ namespace BudgetJar.Api.Controllers
         {
             var userId = User.GetUserId();
             return _db.Categories.AnyAsync(c => c.UserId == userId && c.Name == name);
-        }
-
-        private static CategoryDto ToDto(Category c)
-        {
-            return new CategoryDto
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Type = c.Type,
-                Color = c.Color
-            };
         }
     }
 }
