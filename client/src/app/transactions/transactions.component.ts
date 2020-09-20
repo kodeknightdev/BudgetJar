@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Category, Transaction, TransactionType } from '../models';
+import { toDateValue, toMonthValue } from '../shared/dates';
 import { CategoryService } from '../services/category.service';
 import { TransactionService } from '../services/transaction.service';
 
@@ -21,7 +22,7 @@ export class TransactionsComponent implements OnInit {
 
   form = this.fb.group({
     amount: [null, [Validators.required, Validators.min(0.01)]],
-    date: [this.today(), Validators.required],
+    date: [toDateValue(new Date()), Validators.required],
     description: ['', Validators.maxLength(200)],
     categoryId: [null, Validators.required]
   });
@@ -37,7 +38,7 @@ export class TransactionsComponent implements OnInit {
   }
 
   get monthValue(): string {
-    return `${this.year}-${String(this.month).padStart(2, '0')}`;
+    return toMonthValue(this.year, this.month);
   }
 
   get totalIncome(): number {
@@ -107,7 +108,7 @@ export class TransactionsComponent implements OnInit {
 
   cancelEdit(): void {
     this.editingId = null;
-    this.form.reset({ amount: null, date: this.today(), description: '', categoryId: null });
+    this.form.reset({ amount: null, date: toDateValue(new Date()), description: '', categoryId: null });
   }
 
   remove(t: Transaction): void {
@@ -121,13 +122,5 @@ export class TransactionsComponent implements OnInit {
     return this.transactions
       .filter(t => t.type === type)
       .reduce((total, t) => total + t.amount, 0);
-  }
-
-  private today(): string {
-    // toISOString() is UTC, which gives tomorrow's date in the evening west of GMT.
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${now.getFullYear()}-${month}-${day}`;
   }
 }

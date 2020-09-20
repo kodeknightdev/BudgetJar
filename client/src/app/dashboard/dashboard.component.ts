@@ -3,8 +3,7 @@ import * as Chart from 'chart.js';
 
 import { CategoryTotal, MonthlyTotal } from '../models';
 import { SummaryService } from '../services/summary.service';
-
-const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+import { MONTH_LABELS } from '../shared/dates';
 
 @Component({
   selector: 'app-dashboard',
