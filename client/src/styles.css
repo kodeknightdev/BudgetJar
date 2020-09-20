@@ -46,6 +46,17 @@ h2 {
   flex: 1;
 }
 
+@media (max-width: 640px) {
+  .columns {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .card {
+    padding: 14px;
+  }
+}
+
 input,
 select,
 button {
