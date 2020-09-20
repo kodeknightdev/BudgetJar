@@ -19,9 +19,22 @@ h2 {
 .card {
   background: #fff;
   border: 1px solid #e1e4e8;
-  border-radius: 6px;
-  padding: 16px;
-  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(31, 45, 61, .06);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.toolbar h2 {
+  margin: 0;
 }
 
 .columns {
@@ -38,6 +51,20 @@ select,
 button {
   font: inherit;
   padding: 6px 8px;
+}
+
+input,
+select {
+  border: 1px solid #cfd6de;
+  border-radius: 4px;
+  background: #fff;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #2d6cdf;
+  box-shadow: 0 0 0 2px rgba(45, 108, 223, .15);
 }
 
 button {
@@ -86,6 +113,18 @@ td {
   text-align: left;
   padding: 8px;
   border-bottom: 1px solid #eee;
+}
+
+th {
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  color: #6b7785;
+}
+
+tbody tr:hover {
+  background: #f8f9fb;
 }
 
 th.amount,
