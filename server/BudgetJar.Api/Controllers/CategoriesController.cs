@@ -81,7 +81,7 @@ namespace BudgetJar.Api.Controllers
             }
 
             var name = request.Name.Trim();
-            if (await NameTakenAsync(name))
+            if (await NameTakenAsync(name, id))
             {
                 return Conflict(new { message = $"You already have a category called \"{name}\"." });
             }
@@ -120,10 +120,10 @@ namespace BudgetJar.Api.Controllers
             return _db.Categories.SingleOrDefaultAsync(c => c.Id == id && c.UserId == userId);
         }
 
-        private Task<bool> NameTakenAsync(string name)
+        private Task<bool> NameTakenAsync(string name, int? exceptId = null)
         {
             var userId = User.GetUserId();
-            return _db.Categories.AnyAsync(c => c.UserId == userId && c.Name == name);
+            return _db.Categories.AnyAsync(c => c.UserId == userId && c.Name == name && c.Id != exceptId);
         }
     }
 }
