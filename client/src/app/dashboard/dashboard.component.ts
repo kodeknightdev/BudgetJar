@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as Chart from 'chart.js';
 
 import { CategoryTotal, MonthlyTotal } from '../models';
@@ -10,7 +10,7 @@ import { MONTH_LABELS } from '../shared/dates';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('monthlyCanvas', { static: true }) monthlyCanvas: ElementRef<HTMLCanvasElement>;
   @ViewChild('breakdownCanvas', { static: true }) breakdownCanvas: ElementRef<HTMLCanvasElement>;
 
@@ -41,6 +41,12 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadYear();
+  }
+
+  ngOnDestroy(): void {
+    // Chart.js keeps resize listeners around until the chart is destroyed.
+    this.monthlyChart?.destroy();
+    this.breakdownChart?.destroy();
   }
 
   onYearChange(value: string): void {
