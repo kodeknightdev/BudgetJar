@@ -6,9 +6,9 @@
     </select>
   </div>
   <div class="year-totals">
-    <span>Income <strong class="income">{{ yearIncome | number:'1.2-2' }}</strong></span>
-    <span>Expenses <strong class="expense">{{ yearExpense | number:'1.2-2' }}</strong></span>
-    <span>Saved <strong>{{ yearIncome - yearExpense | number:'1.2-2' }}</strong></span>
+    <span>Income <strong class="income">{{ yearIncome | currency }}</strong></span>
+    <span>Expenses <strong class="expense">{{ yearExpense | currency }}</strong></span>
+    <span>Saved <strong>{{ yearIncome - yearExpense | currency }}</strong></span>
   </div>
   <div class="chart-box">
     <canvas #monthlyCanvas></canvas>

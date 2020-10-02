@@ -40,7 +40,7 @@
         <td>{{ t.categoryName }}</td>
         <td>{{ t.description }}</td>
         <td class="amount" [class.income]="t.type === 'Income'" [class.expense]="t.type === 'Expense'">
-          {{ t.type === 'Expense' ? '-' : '' }}{{ t.amount | number:'1.2-2' }}
+          {{ t.type === 'Expense' ? '-' : '' }}{{ t.amount | currency }}
         </td>
         <td class="actions">
           <button class="link" (click)="edit(t)">Edit</button>
@@ -52,8 +52,8 @@
   <p class="empty" *ngIf="!transactions.length">No transactions for this month yet.</p>
 
   <div class="totals">
-    <span>Income <strong class="income">{{ totalIncome | number:'1.2-2' }}</strong></span>
-    <span>Expenses <strong class="expense">{{ totalExpense | number:'1.2-2' }}</strong></span>
-    <span>Net <strong [class.income]="net >= 0" [class.expense]="net < 0">{{ net | number:'1.2-2' }}</strong></span>
+    <span>Income <strong class="income">{{ totalIncome | currency }}</strong></span>
+    <span>Expenses <strong class="expense">{{ totalExpense | currency }}</strong></span>
+    <span>Net <strong [class.income]="net >= 0" [class.expense]="net < 0">{{ net | currency }}</strong></span>
   </div>
 </section>
