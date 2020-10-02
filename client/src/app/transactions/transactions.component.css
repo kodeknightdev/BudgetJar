@@ -5,6 +5,13 @@
   padding-top: 12px;
 }
 
+.empty {
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+  color: #888;
+}
+
 .actions {
   white-space: nowrap;
   text-align: right;

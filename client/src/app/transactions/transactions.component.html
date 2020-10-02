@@ -49,6 +49,7 @@
       </tr>
     </tbody>
   </table>
+  <p class="empty" *ngIf="!transactions.length">No transactions for this month yet.</p>
 
   <div class="totals">
     <span>Income <strong class="income">{{ totalIncome | number:'1.2-2' }}</strong></span>
