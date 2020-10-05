@@ -91,7 +91,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        onClick: (event, elements) => {
+        onClick: (_event, elements) => {
           if (elements && elements.length) {
             // tslint:disable-next-line:no-any
             this.selectMonth((elements[0] as any)._index + 1);

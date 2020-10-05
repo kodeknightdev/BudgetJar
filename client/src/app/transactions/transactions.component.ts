@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { Category, Transaction, TransactionType } from '../models';
 import { toDateValue, toMonthValue } from '../shared/dates';
