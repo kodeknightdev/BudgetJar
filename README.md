@@ -20,7 +20,15 @@ The project started on .NET Core 3.1 / Angular 10 and was moved to .NET 5 / Angu
 
 ### API
 
-Requires the .NET 5 SDK (see `server/global.json`) and a SQL Server instance (LocalDB works fine on Windows).
+Requires the .NET 5 SDK (see `server/global.json`) and a SQL Server instance.
+
+On macOS / Linux, start SQL Server in docker from the repo root:
+
+```bash
+docker-compose up -d
+```
+
+`appsettings.Development.json` points at that container. On Windows with LocalDB, remove the connection string from `appsettings.Development.json` (or override `ConnectionStrings__BudgetJar`) to fall back to the LocalDB one in `appsettings.json`.
 
 ```bash
 cd server/BudgetJar.Api
@@ -67,3 +75,10 @@ Open http://localhost:4200. Requests to `/api` are proxied to the API (`client/p
 | GET        | `/api/summary/categories?year=&month=` | expense totals per category       |
 
 Everything except `/api/auth/*` and `/api/ping` needs an `Authorization: Bearer <token>` header.
+
+## Troubleshooting
+
+- **`npm start` shows proxy errors (ECONNREFUSED)** - the API isn't running on port 5000.
+- **Login works but every page bounces back to /login** - check the clock on the machine; tokens are validated with a 1 minute skew.
+- **`Invalid column name 'UserId'` / similar SQL errors** - the dev database predates a model change. Drop it (see *Database* above).
+- **Chart area is blank** - there are no transactions for the selected year yet.
